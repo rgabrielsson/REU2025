@@ -46,11 +46,11 @@ def test_cases():
             count += 1
         if count > maxcount:
             maxcount = count
-        if count == 3 and a != 1 and a != 1 and a != 1:
+        if count == 3 and a != 1 and b != 1 and c != 1:
             print(combo)
             print(a+b+c)
 
-    print(maxcount)
+    #print(maxcount)
 
 
 def find_lowest_k(ving):
@@ -66,5 +66,48 @@ def find_lowest_k(ving):
     print("---------")
 
 
-for i in range(14):
-    find_lowest_k(i)
+#test_cases()
+
+
+
+def calc_charge(val):
+    charge = 2**(val-1) * (14-val)
+    if charge < 0:
+        charge = charge / math.comb(val,3)
+    return charge
+
+def test_2():
+    families = []
+    for a in range(11):
+        for b in range(11):
+            for c in range(11):
+                families.append((a,b,c))           
+    
+    worst_charge = 0
+    worst_families = []
+    pairings = []
+    for family in families:
+        a = family[0]
+        b = family[1]
+        c = family[2]
+        c3 = calc_charge(3)
+        ca = calc_charge(a+3)
+        cb = calc_charge(b+3)
+        cc = calc_charge(c+3)
+        cab = calc_charge(a+b+3)
+        cac = calc_charge(a+c+3)
+        ccb = calc_charge(b+c+3)
+        cabc = calc_charge(a+b+c+3)
+        charges = [c3,ca,cb,cc,cab,cac,ccb,cabc]
+        total = sum(charges) / len(charges)
+        if total >= worst_charge:
+            worst_charge = total
+        pairings.append((total,(a,b,c)))
+    for pairing in pairings:
+        if pairing[0] == worst_charge:
+            worst_families.append(pairing[1])    
+    print(worst_charge)
+    print(worst_families)
+
+
+test_2()
