@@ -69,13 +69,14 @@ def find_lowest_k(ving):
 #test_cases()
 
 
-
+#get charge on a given 0-ving based on formula
 def calc_charge(val):
     charge = 2**(val-1) * (14-val)
     if charge < 0:
         charge = charge / math.comb(val,3)
     return charge
 
+#get every possible family
 def test_2():
     families = []
     for a in range(11):
@@ -86,6 +87,8 @@ def test_2():
     worst_charge = 0
     worst_families = []
     pairings = []
+
+    #iterate over families to find the ones with highest charge
     for family in families:
         a = family[0]
         b = family[1]
@@ -100,9 +103,13 @@ def test_2():
         cabc = calc_charge(a+b+c+3)
         charges = [c3,ca,cb,cc,cab,cac,ccb,cabc]
         total = sum(charges) / len(charges)
+
+        #identify highest possible total charge
         if total >= worst_charge:
             worst_charge = total
         pairings.append((total,(a,b,c)))
+    
+    #find all families that give the worst possible charge
     for pairing in pairings:
         if pairing[0] == worst_charge:
             worst_families.append(pairing[1])    
