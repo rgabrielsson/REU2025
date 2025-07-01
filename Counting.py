@@ -71,7 +71,7 @@ def find_lowest_k(ving):
 
 #get charge on a given 0-ving based on formula
 def calc_charge(val):
-    charge = 2**(val-1) * (14-val)
+    charge = 2**(val-1) * (9-val)
     if charge < 0:
         charge = charge / math.comb(val,3)
     return charge
