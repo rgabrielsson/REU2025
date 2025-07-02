@@ -1,4 +1,5 @@
 import math
+import itertools
 
 def test_cases():
     testset = [9,10]
@@ -77,13 +78,18 @@ def calc_charge(val):
     return charge
 
 #get every possible family
-def test_2():
+def get_families():
     families = []
     for a in range(11):
         for b in range(11):
             for c in range(11):
-                families.append((a,b,c))           
+                if (a,c,b) not in families and (b,c,a) not in families and (b,a,c) not in families and (c,a,b) not in families and (c,b,a) not in families: 
+                    families.append((a,b,c))       
+    return families         
     
+
+def test2():
+    families = get_families()
     worst_charge = 0
     worst_families = []
     pairings = []
@@ -110,11 +116,34 @@ def test_2():
         pairings.append((total,(a,b,c)))
     
     #find all families that give the worst possible charge
+    pairings.sort()
     for pairing in pairings:
         if pairing[0] == worst_charge:
-            worst_families.append(pairing[1])    
-    print(worst_charge)
-    print(worst_families)
+            worst_families.append(pairing[1])
+        if pairing[0] > 0.5*worst_charge and pairing[1][0] != 0:
+            print(pairing)  
+
+test2()
 
 
-test_2()
+
+
+def triple_one_clans():
+    # Generate all combinations
+    combinations = list(itertools.product(range(5), repeat=6))
+    for combo in combinations:
+        if (combo[0]+combo[1]) > 5 or (combo[2]+combo[3]) > 5 or (combo[4]+combo[5]) > 5:
+            combinations.remove(combo)
+        else:
+            combinations[combinations.index(combo)] = [(combo[0],combo[1]),(combo[2],combo[3]),(combo[4],combo[5])]
+        
+        for pair in combo:
+            
+        
+
+    # Print the total number of combinations and a few examples
+    print(f"Total combinations: {len(combinations)}")
+    for combo in combinations[:10]:  # print first 10
+        print(combo)
+
+triple_one_clans()
