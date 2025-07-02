@@ -54,7 +54,7 @@ def test_cases():
 
 
 def find_lowest_k(ving):
-    start_charge = 2**(ving-1) * (14-ving)
+    start_charge = 2**(ving-1) * (9-ving)
     charge = 4096
     k=12
     while charge >= 0:
