@@ -9,7 +9,7 @@ def f(c):
 
 #define sparse function
 def g(c):
-    sparse = 162/(9-4*c)
+    sparse = 144/(9-4*c)
     return sparse
 
 #find differences between pg limit for dense and sparse
