@@ -1,75 +1,6 @@
 import math
 import itertools
 
-# def test_cases():
-#     testset = [9,10]
-
-#     combos = []
-#     for a in range(11):
-#         for b in range(11):
-#             for c in range(11):
-#                 if a + b + c in testset:
-#                     combos.append((a,b,c))
-#                 elif a in testset:
-#                     combos.append((a,b,c))
-#                 elif b in testset:
-#                     combos.append((a,b,c))
-#                 elif c in testset:
-#                     combos.append((a,b,c))
-#                 elif a + b in testset:
-#                     combos.append((a,b,c))
-#                 elif c + b in testset:
-#                     combos.append((a,b,c))
-#                 elif a + c in testset:
-#                     combos.append((a,b,c))
-
-
-#     maxcount = 0
-#     for combo in combos:
-#         count = 0
-#         a = combo[0]
-#         b = combo[1]
-#         c = combo[2]
-
-#         if a in testset:
-#             count += 1
-#         if b in testset:
-#             count += 1
-#         if c in testset:
-#             count += 1
-#         if a + b in testset:
-#             count += 1
-#         if c + b in testset:
-#             count += 1
-#         if a + c in testset:
-#             count += 1
-#         if a + b +c in testset:
-#             count += 1
-#         if count > maxcount:
-#             maxcount = count
-#         if count == 3 and a != 1 and b != 1 and c != 1:
-#             print(combo)
-#             print(a+b+c)
-
-#     #print(maxcount)
-
-
-# def find_lowest_k(ving):
-#     start_charge = 2**(ving-1) * (9-ving)
-#     charge = 4096
-#     k=12
-#     while charge >= 0:
-#         k=k+1
-#         charge = ((math.factorial(k)/(math.factorial(ving)*math.factorial(k-ving)))*start_charge + 2**(k-1) * (14-k))/((math.factorial(k)/(math.factorial(ving)*math.factorial(k-ving)))+1)
-#     print(ving)
-#     print(k)
-#     print(charge)
-#     print("---------")
-
-
-# #test_cases()
-
-
 #get charge on a given 0-ving based on formula
 def calc_charge(val):
     charge = 2**(val-1) * (9-val)
@@ -80,9 +11,9 @@ def calc_charge(val):
 #get every possible family
 def get_families():
     families = []
-    for a in range(11):
-        for b in range(11):
-            for c in range(11): 
+    for a in range(15):
+        for b in range(15):
+            for c in range(15): 
                 families.append((a,b,c))       
     return families         
     
@@ -125,97 +56,224 @@ def families():
     return pairings
 
 
-#families()
 
+def clans001():
+    familyList = families()
+    familyDict = {}
+    for family in familyList:
+        familyDict[family[1]] = family[0]
 
-def generate_triple_one_clans():
-    # Step 1: Generate all unordered pairs (a, b) where a <= b and the total of a+b+1 is at most 5
-    all_pairs = [(a, b) for a in range(5) for b in range(a, 5) if a + b <= 4]
+    #get all pairs of (a,b) that add up to at most 9
+    all_pairs = [(a, b) for a in range(10) for b in range(a, 10) if a + b <= 10]
 
-    # Step 2: Generate all unique sets of 3 such pairs, unordered
-    unique_sets = list(itertools.combinations_with_replacement(all_pairs, 3))
+    #get the charge on the base family
+    charge001 = familyDict[(0,0,1)]
 
-    # Step 3 (Optional): Sort each pair and each set for consistency
-    unique_sets = [tuple(sorted(pair_set)) for pair_set in unique_sets]
-
-    #Step 4: Unpack unique_sets into a list of 6 values
-    combinations = []
-    for set in unique_sets:
-        combinations.append((set[0][0],set[0][1],set[1][0],set[1][1],set[2][0],set[2][1]))
-
-    # # Display results
-    # print(f"Total unique sets: {len(unique_sets)}")
-    # for s in unique_sets[:20]:  # show only first 10 for brevity
-    #     print(s)
-
-    return combinations
-
-
-#get a dictionary linking clans to the type of (1,1,1) they can reduce to
-def get_clan_dict(clans):
-    clandict = {}
-    for clan in clans:
-        key = ""
-        for i in range(len(clan)):
-            if clan[i] == 0:
-                key += "0"
-            else:
-                key += "1"
-        if key not in clandict:
-            clandict[key] = [clan]
-        else:
-            clandict[key].append(clan)
-    return clandict
-
-
-
-#put it all together
-def test3():
-    #get a list of (charge,family) pairings and make it into a dictionary linking family to the charge on that family
-    pairings = families()
-    familydict = {}
-    for pairing in pairings:
-        family = pairing[1]
-        if family not in familydict:
-            familydict[family] = pairing[0]
-        
-    #get every unique possible combination of a,b,c,d,e,f and put them in a dictionary that links them to the pattern they follow
-    triple_one_clans = generate_triple_one_clans()
-    clandict_111 = get_clan_dict(triple_one_clans)
-
-    # unpack the clandictionary and iterate over it to get the averaged charge on each (1,1,1) pattern
-    clanrefs = []
+    #check each clan and find the worst charge
     worst_charge = 0
-    for key,value in clandict_111.items():
-        charge = 0
-        num_fams = 0
-
-        #get charge on each family and divide by number of families
-        for v in value:
-            family = (v[0]+v[1]+1,v[2]+v[3]+1,v[4]+v[5]+1)
-            # print(family)
-            # print(familydict[family])
-            charge += familydict[family]
-            num_fams += 1
-        average_charge = charge/num_fams
-
-        #get the worst charge over all clans
-        if average_charge > worst_charge:
-            worst_charge = average_charge
-        clanrefs.append((average_charge,key))
-    
-    #get worst clans
-    worst_clans = []
-    for ref in clanrefs:
-        if ref[0] == worst_charge:
-            worst_clans.append(ref[1])
-
-    #display worst charge and clan 
+    for pair in all_pairs:
+        triple = [(0,0,pair[0]+1),(0,0,pair[1]+1),(0,0,pair[0]+pair[1]+1)]
+        avgCharge = (familyDict[triple[0]] + familyDict[triple[1]] + familyDict[triple[1]] + charge001) / 4
+        if avgCharge > worst_charge:
+            worst_charge = avgCharge
+            worst_pair = [pair]
+        elif avgCharge == worst_charge:
+            worst_pair.append(pair)
     print(worst_charge)
-    print(worst_clans)
+    print(worst_pair)
+
+clans001()
+
+
+
+
+
+
+
+def clans011():
+    familyList = families()
+    familyDict = {}
+    for family in familyList:
+        familyDict[family[1]] = family[0]
+
+    #get all pairs of (a,b) that add up to at most 9
+    all_pairs = [(a, b, c, d) for a in range(10) for b in range(a, 10) for c in range(10) for d in range(c,10) if a + b <= 10 if c+d <=10]
+
+    #get the charge on the base family
+    charge011 = familyDict[(0,1,1)]
+
+    #check each clan and find the worst charge
+    worst_charge = 0
+    for pair in all_pairs:
+        fifteen = [(0,1,pair[0]+1),
+                   (0,1,pair[1]+1),
+                   (0,1,pair[2]+1),
+                   (0,1,pair[3]+1), 
+                   (0,1,pair[0]+pair[1]+1),
+                   (0,1,pair[2]+pair[3]+1),
+                   (0,pair[0]+1,pair[2]+1),
+                   (0,pair[0]+1,pair[3]+1),
+                   (0,pair[1]+1,pair[2]+1),
+                   (0,pair[1]+1,pair[3]+1),
+                   (0,pair[0]+pair[1]+1,pair[2]+pair[3]+1),
+                   (0,pair[1]+1,pair[2]+pair[3]+1),
+                   (0,pair[0]+1,pair[2]+pair[3]+1),
+                   (0,pair[0]+pair[1]+1,pair[3]+1),
+                   (0,pair[0]+pair[1]+1,pair[2]+1)]
+        total_charge = charge011
+        items = 1
+        for item in fifteen:
+            total_charge += familyDict[item]
+            items+= 1
+        avgCharge = total_charge/items
+        if avgCharge > worst_charge:
+            worst_charge = avgCharge
+            worst_pair = [pair]
+        elif avgCharge == worst_charge:
+            worst_pair.append(pair)
+    print(worst_charge)
+    print(worst_pair)
+
+clans011()
+
+
+
+#in progress
+def clans111():
+    familyList = families()
+    familyDict = {}
+    for family in familyList:
+        familyDict[family[1]] = family[0]
+
+    #get all pairs of (a,b) that add up to at most 9
+    all_pairs = [(a, b, c, d, e, f) for a in range(10) for b in range(a, 10) for c in range(10) for d in range(c,10) for e in range(10) for f in range(e,10) if a + b <= 10 if c+d <=10 if e+f <=10]
+
+    #get the charge on the base family
+    charge111 = familyDict[(1,1,1)]
+
+    #check each clan and find the worst charge
+    worst_charge = 0
+    worst_sets = []
+    for pair in all_pairs:
+        set = [(1,1,pair[0]+1),]
+        total_charge = charge111
+        items = 1
+        for item in set:
+            total_charge += familyDict[item]
+            items += 1
+        avgCharge = total_charge/items
+        if avgCharge > worst_charge:
+            worst_charge = avgCharge
+            worst_sets.append(set)
+    print(worst_charge)
+    #print(worst_sets)
+
+
+#clans111()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# def generate_111_clans():
+#     # Step 1: Generate all unordered pairs (a, b) where a <= b and the total of a+b+1 is at most 5
+#     all_pairs = [(a, b) for a in range(5) for b in range(a, 5) if a + b <= 4]
+
+#     # Step 2: Generate all unique sets of 3 such pairs, unordered
+#     unique_sets = list(itertools.combinations_with_replacement(all_pairs, 3))
+
+#     # Step 3 (Optional): Sort each pair and each set for consistency
+#     unique_sets = [tuple(sorted(pair_set)) for pair_set in unique_sets]
+
+#     #Step 4: Unpack unique_sets into a list of 6 values
+#     combinations = []
+#     for set in unique_sets:
+#         combinations.append((set[0][0],set[0][1],set[1][0],set[1][1],set[2][0],set[2][1]))
+
+#     # # Display results
+#     # print(f"Total unique sets: {len(unique_sets)}")
+#     # for s in unique_sets[:20]:  # show only first 10 for brevity
+#     #     print(s)
+
+#     return combinations
+
+
+# #get a dictionary linking clans to the type of (1,1,1) they can reduce to
+# def get_clan_dict(clans):
+#     clandict = {}
+#     for clan in clans:
+#         key = ""
+#         for i in range(len(clan)):
+#             if clan[i] == 0:
+#                 key += "0"
+#             else:
+#                 key += "1"
+#         if key not in clandict:
+#             clandict[key] = [clan]
+#         else:
+#             clandict[key].append(clan)
+#     return clandict
+
+
+
+# #put it all together
+# def test3():
+#     #get a list of (charge,family) pairings and make it into a dictionary linking family to the charge on that family
+#     pairings = families()
+#     familydict = {}
+#     for pairing in pairings:
+#         family = pairing[1]
+#         if family not in familydict:
+#             familydict[family] = pairing[0]
+        
+#     #get every unique possible combination of a,b,c,d,e,f and put them in a dictionary that links them to the pattern they follow
+#     triple_one_clans = generate_111_clans()
+#     clandict_111 = get_clan_dict(triple_one_clans)
+
+#     # unpack the clandictionary and iterate over it to get the averaged charge on each (1,1,1) pattern
+#     clanrefs = []
+#     worst_charge = 0
+#     for key,value in clandict_111.items():
+#         charge = 0
+#         num_fams = 0
+
+#         #get charge on each family and divide by number of families
+#         for v in value:
+#             family = (v[0]+v[1]+1,v[2]+v[3]+1,v[4]+v[5]+1)
+#             # print(family)
+#             # print(familydict[family])
+#             charge += familydict[family]
+#             num_fams += 1
+#         average_charge = charge/num_fams
+
+#         #get the worst charge over all clans
+#         if average_charge > worst_charge:
+#             worst_charge = average_charge
+#         clanrefs.append((average_charge,key))
+    
+#     #get worst clans
+#     worst_clans = []
+#     for ref in clanrefs:
+#         if ref[0] == worst_charge:
+#             worst_clans.append(ref[1])
+
+#     #display worst charge and clan 
+#     print(worst_charge)
+#     print(worst_clans)
                 
             
-test3()
+# # test3()
 
 
 
@@ -230,83 +288,83 @@ test3()
 
 
 
-def generate_011_clans():
-    # Step 1: Generate all unordered pairs (a, b) where a <= b and the total of a+b+1 is at most 5
-    all_pairs = [(a, b) for a in range(5) for b in range(a, 5) if a + b <= 4]
+# def generate_011_clans():
+#     # Step 1: Generate all unordered pairs (a, b) where a <= b and the total of a+b+1 is at most 5
+#     all_pairs = [(a, b) for a in range(5) for b in range(a, 5) if a + b <= 4]
 
-    # Step 2: Generate all unique sets of 3 such pairs, unordered
-    unique_sets = list(itertools.combinations_with_replacement(all_pairs, 2))
+#     # Step 2: Generate all unique sets of 3 such pairs, unordered
+#     unique_sets = list(itertools.combinations_with_replacement(all_pairs, 2))
 
-    # Step 3 (Optional): Sort each pair and each set for consistency
-    unique_sets = [tuple(sorted(pair_set)) for pair_set in unique_sets]
+#     # Step 3 (Optional): Sort each pair and each set for consistency
+#     unique_sets = [tuple(sorted(pair_set)) for pair_set in unique_sets]
 
-    #Step 4: Unpack unique_sets into a list of 6 values
-    combinations = []
-    for set in unique_sets:
-        combinations.append((set[0][0],set[0][1],set[1][0],set[1][1]))
+#     #Step 4: Unpack unique_sets into a list of 6 values
+#     combinations = []
+#     for set in unique_sets:
+#         combinations.append((set[0][0],set[0][1],set[1][0],set[1][1]))
 
-    # Display results
-    print(f"Total unique sets: {len(unique_sets)}")
-    # for s in unique_sets[:20]:  # show only first 10 for brevity
-    #     print(s)
+#     # Display results
+#     # print(f"Total unique sets: {len(unique_sets)}")
+#     # for s in unique_sets[:20]:  # show only first 10 for brevity
+#     #     print(s)
 
-    return combinations
-
-
-#generate_011_clans()
+#     return combinations
 
 
+# #generate_011_clans()
 
 
 
 
-#put it all together
-def test4():
-    #get a list of (charge,family) pairings and make it into a dictionary linking family to the charge on that family
-    pairings = families()
-    familydict = {}
-    for pairing in pairings:
-        family = pairing[1]
-        if family not in familydict:
-            familydict[family] = pairing[0]
+
+
+# #put it all together
+# def test4():
+#     #get a list of (charge,family) pairings and make it into a dictionary linking family to the charge on that family
+#     pairings = families()
+#     familydict = {}
+#     for pairing in pairings:
+#         family = pairing[1]
+#         if family not in familydict:
+#             familydict[family] = pairing[0]
         
-    #get every unique possible combination of a,b,c,d,e,f and put them in a dictionary that links them to the pattern they follow
-    clans_011 = generate_011_clans()
-    clandict_011 = get_clan_dict(clans_011)
+#     #get every unique possible combination of a,b,c,d,e,f and put them in a dictionary that links them to the pattern they follow
+#     clans_011 = generate_011_clans()
+#     clandict_011 = get_clan_dict(clans_011)
 
-    # unpack the clandictionary and iterate over it to get the averaged charge on each (1,1,1) pattern
-    clanrefs = []
-    worst_charge = 0
-    for key,value in clandict_011.items():
-        charge = 0
-        num_fams = 0
+#     # unpack the clandictionary and iterate over it to get the averaged charge on each (1,1,1) pattern
+#     clanrefs = []
+#     worst_charge = 0
+#     for key,value in clandict_011.items():
+#         charge = 0
+#         num_fams = 0
 
-        #get charge on each family and divide by number of families
-        for v in value:
-            family = (0, v[0]+v[1]+1,v[2]+v[3]+1)
-            # print(family)
-            # print(familydict[family])
-            charge += familydict[family]
-            num_fams += 1
-        average_charge = charge/num_fams
+#         #get charge on each family and divide by number of families
+#         for v in value:
+#             family = (0, v[0]+v[1]+1,v[2]+v[3]+1)
+#             # print(family)
+#             # print(familydict[family])
+#             charge += familydict[family]
+#             num_fams += 1
+#         average_charge = charge/num_fams
 
-        #get the worst charge over all clans
-        if average_charge > worst_charge:
-            worst_charge = average_charge
-        clanrefs.append((average_charge,key))
+#         #get the worst charge over all clans
+#         if average_charge > worst_charge:
+#             worst_charge = average_charge
+#         clanrefs.append((average_charge,key))
     
-    #get worst clans
-    worst_clans = []
-    for ref in clanrefs:
-        if ref[0] == worst_charge:
-            worst_clans.append(ref[1])
+#     #get worst clans
+#     worst_clans = []
+#     for ref in clanrefs:
+#         if ref[0] == worst_charge:
+#             worst_clans.append(ref[1])
 
-    #display worst charge and clan 
-    print(worst_charge)
-    print(worst_clans)
+#     #display worst charge and clan 
+#     print(worst_charge)
+#     print(worst_clans)
                 
             
-test4()
+# #test4()
 
 
 
@@ -318,70 +376,71 @@ test4()
 
 
 
+#Wrong and obsolete (I think)
 
-def generate_001_clans():
-    # Step 1: Generate all unordered pairs (a, b) where a <= b and the total of a+b+1 is at most 5
-    all_pairs = [(a, b) for a in range(5) for b in range(a, 5) if a + b <= 4]
+# def generate_001_clans():
+#     # Step 1: Generate all unordered pairs (a, b) where a <= b and the total of a+b+1 is at most 5
+#     all_pairs = [(a, b) for a in range(5) for b in range(a, 5) if a + b <= 5]
 
-    # Display results
-    print(f"Total unique sets: {len(all_pairs)}")
-    # for s in all_pairs[:20]:  # show only first 10 for brevity
-    #     print(s)
+#     # Display results
+#     # print(f"Total unique sets: {len(all_pairs)}")
+#     # for s in all_pairs[:20]:  # show only first 10 for brevity
+#     #     print(s)
 
-    return all_pairs
-
-
-#generate_011_clans()
+#     return all_pairs
 
 
-
+# #generate_011_clans()
 
 
 
-#put it all together
-def test5():
-    #get a list of (charge,family) pairings and make it into a dictionary linking family to the charge on that family
-    pairings = families()
-    familydict = {}
-    for pairing in pairings:
-        family = pairing[1]
-        if family not in familydict:
-            familydict[family] = pairing[0]
+
+
+
+# #put it all together
+# def test5():
+#     #get a list of (charge,family) pairings and make it into a dictionary linking family to the charge on that family
+#     pairings = families()
+#     familydict = {}
+#     for pairing in pairings:
+#         family = pairing[1]
+#         if family not in familydict:
+#             familydict[family] = pairing[0]
         
-    #get every unique possible combination of a,b,c,d,e,f and put them in a dictionary that links them to the pattern they follow
-    clans_001 = generate_001_clans()
-    clandict_001 = get_clan_dict(clans_001)
+#     #get every unique possible combination of a,b,c,d,e,f and put them in a dictionary that links them to the pattern they follow
+#     clans_001 = generate_001_clans()
+#     clandict_001 = get_clan_dict(clans_001)
 
-    # unpack the clandictionary and iterate over it to get the averaged charge on each (1,1,1) pattern
-    clanrefs = []
-    worst_charge = 0
-    for key,value in clandict_001.items():
-        charge = 0
-        num_fams = 0
+#     # unpack the clandictionary and iterate over it to get the averaged charge on each (1,1,1) pattern
+#     clanrefs = []
+#     worst_charge = 0
+#     for key,value in clandict_001.items():
+#         charge = 0
+#         num_fams = 0
 
-        #get charge on each family and divide by number of families
-        for v in value:
-            family = (0, 0, v[0]+v[1]+1)
-            # print(family)
-            # print(familydict[family])
-            charge += familydict[family]
-            num_fams += 1
-        average_charge = charge/num_fams
+#         #get charge on each family and divide by number of families
+#         for v in value:
+#             family = (0, 0, v[0]+v[1]+1)
+#             # print(family)
+#             # print(familydict[family])
+#             charge += familydict[family]
+#             num_fams += 1
+#         average_charge = charge/num_fams
 
-        #get the worst charge over all clans
-        if average_charge > worst_charge:
-            worst_charge = average_charge
-        clanrefs.append((average_charge,key))
+#         #get the worst charge over all clans
+#         if average_charge > worst_charge:
+#             worst_charge = average_charge
+#         clanrefs.append((average_charge,key))
     
-    #get worst clans
-    worst_clans = []
-    for ref in clanrefs:
-        if ref[0] == worst_charge:
-            worst_clans.append(ref[1])
+#     #get worst clans
+#     worst_clans = []
+#     for ref in clanrefs:
+#         if ref[0] == worst_charge:
+#             worst_clans.append(ref[1])
 
-    #display worst charge and clan 
-    print(worst_charge)
-    print(worst_clans)
+#     #display worst charge and clan 
+#     print(worst_charge)
+#     print(worst_clans)
                 
             
-test5()
+# #test5()
