@@ -16,6 +16,15 @@ def get_families():
             for c in range(15): 
                 families.append((a,b,c))       
     return families         
+
+#thing for slideshow
+# tups = []
+# for i in range(15):
+#     charge = calc_charge(i)
+#     tups.append((charge,i))
+# tups.sort()
+# print(tups)
+
     
 
 def families():
@@ -56,7 +65,7 @@ def families():
     return pairings
 
 
-
+#families()
 
 def get_combos(tup):
     list1 = [1,tup[0]+1, tup[1]+1,tup[0]+tup[1]+1]
@@ -112,7 +121,7 @@ def clans001():
     print(worst_charge)
     print(worst_pair)
 
-clans001()
+#clans001()
 
 
 
@@ -148,7 +157,7 @@ def clans011():
     print(worst_charge)
     print(worst_pair)
 
-clans011()
+#clans011()
 
 
 
@@ -183,51 +192,36 @@ def clans111():
         elif avgCharge == worst_charge:
             worst_pair.append(pair)
         
-        if avgCharge > 70:
-            over70.append(pair)
+        if avgCharge > 72:
+            over70.append((f"{avgCharge:.2f}",pair))
+            #over70.append(pair)
+        
 
         # if pair == (0,1,1,1,1,1):
-        #     print("________")
+        #     print("------------")
         #     print(avgCharge)
-        #     print("________")
-        # if pair == (0,1,1,1,1,2):
-        #     print("________")
+        #     print("------------")
+        # if pair == (0,1,1,1,2,2):
+        #     print("------------both")
         #     print(avgCharge)
-        #     print("________")
-        # if pair == (0,2,1,1,1,1):
-        #     print("________________")
-        #     print(avgCharge)
-        #     print("________________")
-
-        # if pair == (0,2,1,2,1,1):
-        #     print("________________yay")
-        #     print(avgCharge)
-        #     print("________________yay")
-
+        #     print("------------both")
         # if pair == (0,1,1,2,1,2):
-        #     print("________________lol")
+        #     print("------------33")
         #     print(avgCharge)
-        #     print("________________lol")
-        # if pair == (0,0,1,1,1,3):
-        #     print("________________lol")
+        #     print("------------33")
+        # if pair == (0,2,1,1,1,2):
+        #     print("------------23")
         #     print(avgCharge)
-        #     print("________________lol")
-        # if pair == (0,0,1,1,1,2):
-        #     print("________________loll")
-        #     print(avgCharge)
-        #     print("________________loll")
-        # if pair == (0,1,1,1,1,1):
-        #     print("________________lol")
-        #     print(avgCharge)
-        #     print("________________lol")
+        #     print("------------23")
+
 
 
     
         
-        
-    print(worst_charge)
-    print(worst_pair)
-    # return(over70)
+    # over70.sort()  
+    # print(worst_charge)
+    # print(worst_pair)
+    #return(over70)
 
 
 
@@ -244,9 +238,10 @@ def remove_permutation_duplicates(list_of_lists):
 
 
 
-clans111()
+#clans111()
 
 # over70 = clans111()
+# print(over70)
 # new = []
 # for item in over70:
 #     newlst = ([item[0]+item[1]+1, item[2]+item[3]+1,item[4]+item[5]+1])
@@ -287,4 +282,6 @@ clans111()
 
 
 
+
+#print((66.61486013986016 + 3*74.2431818181818)/4)
 
