@@ -1,6 +1,17 @@
 import math
 import itertools
 
+#get rid of duplicates
+def remove_permutation_duplicates(list_of_lists):
+    seen = set()
+    result = []
+    for lst in list_of_lists:
+        key = tuple(sorted(lst))
+        if key not in seen:
+            seen.add(key)
+            result.append(lst)
+    return result
+
 #get charge on a given 0-ving based on formula
 def calc_charge(val):
     charge = 2**(val-1) * (9-val)
@@ -16,17 +27,7 @@ def get_families():
             for c in range(15): 
                 families.append((a,b,c))       
     return families         
-
-#thing for slideshow
-# tups = []
-# for i in range(15):
-#     charge = calc_charge(i)
-#     tups.append((charge,i))
-# tups.sort()
-# print(tups)
-
     
-
 def families():
     families = get_families()
     worst_charge = 0
@@ -54,18 +55,10 @@ def families():
         if total >= worst_charge:
             worst_charge = total
     
-    #find all families that give the worst possible charge
+    #sort and return list of families and paired charges
     pairings.sort()
-    # for pairing in pairings:
-    #     if pairing[0] == worst_charge:
-    #         worst_families.append(pairing[1])
-    #     if pairing[0] > 0.5*worst_charge and pairing[1][0] == 0:
-    #         print(pairing)  
-    
     return pairings
 
-
-#families()
 
 def get_combos(tup):
     list1 = [1,tup[0]+1, tup[1]+1,tup[0]+tup[1]+1]
@@ -81,7 +74,7 @@ def get_combos(tup):
         list3 = [0]
 
     # Get all combinations
-    combinations = list(itertools.product(list1, list2, list3))
+    combinations = list(itertools.product(list3, list2, list1))
 
     return combinations
         
@@ -121,7 +114,7 @@ def clans001():
     print(worst_charge)
     print(worst_pair)
 
-#clans001()
+clans001()
 
 
 
@@ -157,7 +150,7 @@ def clans011():
     print(worst_charge)
     print(worst_pair)
 
-#clans011()
+clans011()
 
 
 
@@ -195,61 +188,26 @@ def clans111():
         if avgCharge > 72:
             over70.append((f"{avgCharge:.2f}",pair))
             #over70.append(pair)
-        
-
-        # if pair == (0,1,1,1,1,1):
-        #     print("------------")
-        #     print(avgCharge)
-        #     print("------------")
-        # if pair == (0,1,1,1,2,2):
-        #     print("------------both")
-        #     print(avgCharge)
-        #     print("------------both")
-        # if pair == (0,1,1,2,1,2):
-        #     print("------------33")
-        #     print(avgCharge)
-        #     print("------------33")
-        # if pair == (0,2,1,1,1,2):
-        #     print("------------23")
-        #     print(avgCharge)
-        #     print("------------23")
-
-
-
     
-        
-    # over70.sort()  
+    over70.sort()  
     # print(worst_charge)
     # print(worst_pair)
-    #return(over70)
+    return(over70)
+    #print(over70)
 
+clans111()
 
+over70 = clans111()
+#print(over70)
+new = []
+for item in over70:
+    item = item[1]
+    newlst = ([item[0]+item[1]+1, item[2]+item[3]+1,item[4]+item[5]+1])
+    if newlst not in new:
+        new.append(newlst)
 
-
-def remove_permutation_duplicates(list_of_lists):
-    seen = set()
-    result = []
-    for lst in list_of_lists:
-        key = tuple(sorted(lst))
-        if key not in seen:
-            seen.add(key)
-            result.append(lst)
-    return result
-
-
-
-#clans111()
-
-# over70 = clans111()
-# print(over70)
-# new = []
-# for item in over70:
-#     newlst = ([item[0]+item[1]+1, item[2]+item[3]+1,item[4]+item[5]+1])
-#     if newlst not in new:
-#         new.append(newlst)
-
-# cleaned = remove_permutation_duplicates(new)
-# print(cleaned)
+cleaned = remove_permutation_duplicates(new)
+print(cleaned)
 
 
 
@@ -280,8 +238,4 @@ def remove_permutation_duplicates(list_of_lists):
 #     if pairing[1] == (1,1,1):
 #         print(pairing)
 
-
-
-
-#print((66.61486013986016 + 3*74.2431818181818)/4)
 
