@@ -31,7 +31,6 @@ def get_families():
 def families():
     families = get_families()
     worst_charge = 0
-    worst_families = []
     pairings = []
 
     #iterate over families to find the ones with highest charge
@@ -94,11 +93,10 @@ def clans001():
     #get all pairs of (a,b) that add up to at most 9
     all_pairs = [(a, b) for a in range(10) for b in range(a, 10) if a + b <= 10]
 
-    #check each clan and find the worst charge
-    worst_charge = 0
+    #find each charge
+    newlst = []
     for pair in all_pairs:
         triple = get_combos(pair)
-
         total_charge = 0 
         items = 0 
         for item in triple:
@@ -106,19 +104,13 @@ def clans001():
             total_charge += charge
             items += 1
         avgCharge = total_charge/items
-        if avgCharge > worst_charge:
-            worst_charge = avgCharge
-            worst_pair = [pair]
-        elif avgCharge == worst_charge:
-            worst_pair.append(pair)
-    print(worst_charge)
-    print(worst_pair)
-
-clans001()
-
-
-
-
+        newlst.append((avgCharge,pair))
+        
+    outfile = open("clans.txt","w")
+    newlst.sort()
+    for item in newlst:
+        print(item,file=outfile)
+    outfile.close()
 
 
 
@@ -132,35 +124,26 @@ def clans011():
     all_pairs = [(a, b, c, d) for a in range(10) for b in range(a, 10) for c in range(10) for d in range(c,10) if a + b <= 10 if c+d <=10]
 
     #check each clan and find the worst charge
-    worst_charge = 0
+    newlst = []
     for pair in all_pairs:
         fifteen = get_combos(pair)
-
         total_charge = 0 
         items = 0 
         for item in fifteen:
             total_charge += familyDict[item]
             items+= 1
         avgCharge = total_charge/items
-        if avgCharge > worst_charge:
-            worst_charge = avgCharge
-            worst_pair = [pair]
-        elif avgCharge == worst_charge:
-            worst_pair.append(pair)
+        newlst.append((avgCharge,pair))
 
-    print(worst_charge)
-    print(worst_pair)
+    outfile = open("clans.txt","a") 
+    newlst.sort()
 
-
-clans011()
-
-
-
-
+    for item in newlst:
+        print(item,file=outfile)
+    outfile.close()
 
 
 def clans111():
-    over70 = []
     familyList = families()
     familyDict = {}
     for family in familyList:
@@ -170,7 +153,7 @@ def clans111():
     all_pairs = [(a, b, c, d, e, f) for a in range(10) for b in range(a, 10) for c in range(10) for d in range(c,10) for e in range(10) for f in range(e,10) if a + b <= 10 if c+d <=10 if e+f <=10]
 
     #check each clan and find the worst charge
-    worst_charge = 0
+    newlst = []
     for pair in all_pairs:
         set = get_combos(pair)
 
@@ -180,64 +163,20 @@ def clans111():
             total_charge += familyDict[item]
             items += 1
         avgCharge = total_charge/items
-        if avgCharge > worst_charge:
-            worst_charge = avgCharge
-            worst_pair = [pair]
-        elif avgCharge == worst_charge:
-            worst_pair.append(pair)
-        
-        if avgCharge > 74:
-            over70.append((f"{avgCharge:.2f}",pair))
-            #over70.append(pair)
-    
-    over70.sort()  
-    # print(worst_charge)
-    # print(worst_pair)
-    return(over70)
-    #print(over70)
+        newlst.append((avgCharge,pair))
 
-clans111()
-
-over70 = clans111()
-#print(over70)
-new = []
-for item in over70:
-    charge = item[0]
-    item = item[1]
-    newlst = ([item[0]+item[1]+1, item[2]+item[3]+1,item[4]+item[5]+1])
-    if newlst not in new:
-        new.append(newlst)
-
-cleaned = remove_permutation_duplicates(new)
-print(cleaned)
+    outfile = open("clans.txt","a") 
+    newlst.sort()
+    for item in newlst:
+        print(item,file=outfile)
+    outfile.close()
 
 
 
+#run each clan finder
+def main():
+    clans001()
+    clans011()
+    clans111()
 
-
-
-
-# #Worst case
-# familyList = families()
-# familyDict = {}
-# for family in familyList:
-#     familyDict[family[1]] = family[0]
-
-
-# badfam = (0,1,1,1,1,1)
-# combos = get_combos(badfam)
-
-
-# for combo in combos:
-#     print(combo)
-#     print(familyDict[combo])
-
-
-#find individual charge
-# pairings = families()
-# print(pairings)
-# for pairing in pairings:
-#     if pairing[1] == (1,1,1):
-#         print(pairing)
-
-
+main()
