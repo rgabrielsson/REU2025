@@ -54,15 +54,17 @@ def families():
         if total >= worst_charge:
             worst_charge = total
     
+    outfile = open("families.txt","w")
+
     #find all families that give the worst possible charge
     pairings.sort()
     for pairing in pairings:
-        if pairing[0] == worst_charge:
-            worst_families.append(pairing[1])
-        if pairing[0] > 0.5*worst_charge:
-            print(pairing)
+        print(pairing,file = outfile)
+        # if pairing[0] == worst_charge:
+        #     worst_families.append(pairing[1])
+        # if pairing[0] > 0.5*worst_charge:
+        #     print(pairing)
     
-    return pairings
-
+    outfile.close
 
 families()

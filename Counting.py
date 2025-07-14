@@ -185,7 +185,7 @@ def clans111():
         elif avgCharge == worst_charge:
             worst_pair.append(pair)
         
-        if avgCharge > 72:
+        if avgCharge > 70:
             over70.append((f"{avgCharge:.2f}",pair))
             #over70.append(pair)
     
@@ -201,6 +201,7 @@ over70 = clans111()
 #print(over70)
 new = []
 for item in over70:
+    charge = item[0]
     item = item[1]
     newlst = ([item[0]+item[1]+1, item[2]+item[3]+1,item[4]+item[5]+1])
     if newlst not in new:
