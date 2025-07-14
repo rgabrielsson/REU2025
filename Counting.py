@@ -96,6 +96,9 @@ def clans001():
 
     #check each clan and find the worst charge
     worst_charge = 0
+
+    outfile = open("clans.txt","w")
+    newlst = []
     for pair in all_pairs:
         triple = get_combos(pair)
 
@@ -111,8 +114,14 @@ def clans001():
             worst_pair = [pair]
         elif avgCharge == worst_charge:
             worst_pair.append(pair)
+        newlst.append((avgCharge,pair))
+        
+    newlst.sort()
     print(worst_charge)
     print(worst_pair)
+    for item in newlst:
+        print(item,file=outfile)
+    outfile.close()
 
 clans001()
 
@@ -133,6 +142,7 @@ def clans011():
 
     #check each clan and find the worst charge
     worst_charge = 0
+    newlst = []
     for pair in all_pairs:
         fifteen = get_combos(pair)
 
@@ -147,8 +157,16 @@ def clans011():
             worst_pair = [pair]
         elif avgCharge == worst_charge:
             worst_pair.append(pair)
+        newlst.append((avgCharge,pair))
+
+    outfile = open("clans.txt","a") 
+    newlst.sort()
     print(worst_charge)
     print(worst_pair)
+
+    for item in newlst:
+        print(item,file=outfile)
+    outfile.close()
 
 clans011()
 
@@ -169,6 +187,7 @@ def clans111():
     all_pairs = [(a, b, c, d, e, f) for a in range(10) for b in range(a, 10) for c in range(10) for d in range(c,10) for e in range(10) for f in range(e,10) if a + b <= 10 if c+d <=10 if e+f <=10]
 
     #check each clan and find the worst charge
+    newlst = []
     worst_charge = 0
     for pair in all_pairs:
         set = get_combos(pair)
@@ -185,9 +204,16 @@ def clans111():
         elif avgCharge == worst_charge:
             worst_pair.append(pair)
         
-        if avgCharge > 70:
+        if avgCharge > 74:
             over70.append((f"{avgCharge:.2f}",pair))
             #over70.append(pair)
+        newlst.append((avgCharge,pair))
+
+    outfile = open("clans.txt","a") 
+    newlst.sort()
+    for item in newlst:
+        print(item,file=outfile)
+    outfile.close()
     
     over70.sort()  
     # print(worst_charge)
