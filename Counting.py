@@ -186,7 +186,7 @@ def clans111():
         elif avgCharge == worst_charge:
             worst_pair.append(pair)
         
-        if avgCharge > 74:
+        if avgCharge > 72:
             over70.append((f"{avgCharge:.2f}",pair))
             #over70.append(pair)
     
@@ -196,7 +196,7 @@ def clans111():
     return(over70)
     #print(over70)
 
-clans111()
+#clans111()
 
 over70 = clans111()
 #print(over70)
@@ -213,31 +213,5 @@ print(cleaned)
 
 
 
-
-
-
-
-# #Worst case
-# familyList = families()
-# familyDict = {}
-# for family in familyList:
-#     familyDict[family[1]] = family[0]
-
-
-# badfam = (0,1,1,1,1,1)
-# combos = get_combos(badfam)
-
-
-# for combo in combos:
-#     print(combo)
-#     print(familyDict[combo])
-
-
-#find individual charge
-# pairings = families()
-# print(pairings)
-# for pairing in pairings:
-#     if pairing[1] == (1,1,1):
-#         print(pairing)
-
+#print((71.75+74.2431818181818)/(2))
 
