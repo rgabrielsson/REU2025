@@ -22,9 +22,9 @@ def calc_charge(val):
 #get every possible family
 def get_families():
     families = []
-    for a in range(15):
-        for b in range(15):
-            for c in range(15): 
+    for a in range(20):
+        for b in range(20):
+            for c in range(20): 
                 families.append((a,b,c))       
     return families         
     
@@ -60,7 +60,7 @@ def families():
     pairings.sort()
     return pairings
 
-
+#get every combination for each clan
 def get_combos(tup):
     list1 = [1,tup[0]+1, tup[1]+1,tup[0]+tup[1]+1]
 
@@ -80,81 +80,28 @@ def get_combos(tup):
     return combinations
         
 
+#use the six-code for a clan to get the 3-code
+def get_clan_from_six(tup):
+    if len(tup) > 4:
+        return (tup[0]+tup[1]+1, tup[2]+tup[3]+1, tup[4]+tup[5]+1)
+    elif len(tup) > 2:
+        return (tup[0]+tup[1]+1, tup[2]+tup[3]+1, 0)
+    elif len(tup)>0:
+        return (tup[0]+tup[1]+1, 0, 0)
+    else:
+        return (0, 0, 0)
 
-
-
-
-
-
-def clans001():
+def clans():
     familyList = families()
     familyDict = {}
     for family in familyList:
         familyDict[family[1]] = family[0]
 
     #get all pairs of (a,b) that add up to at most 9
-    all_pairs = [(a, b) for a in range(10) for b in range(a, 10) if a + b <= 10]
-
-    #find each charge
-    newlst = []
-    for pair in all_pairs:
-        triple = get_combos(pair)
-        total_charge = 0 
-        items = 0 
-        for item in triple:
-            charge = familyDict[item]
-            total_charge += charge
-            items += 1
-        avgCharge = total_charge/items
-        clan = (pair[0]+pair[1]+1, 0,0)
-        newlst.append((avgCharge,clan,pair))
-        
-    outfile = open("clans.txt","w")
-    newlst.sort()
-    for item in newlst:
-        print(item,file=outfile)
-    outfile.close()
-
-
-
-def clans011():
-    familyList = families()
-    familyDict = {}
-    for family in familyList:
-        familyDict[family[1]] = family[0]
-
-    #get all pairs of (a,b) that add up to at most 9
-    all_pairs = [(a, b, c, d) for a in range(10) for b in range(a, 10) for c in range(10) for d in range(c,10) if a + b <= 10 if c+d <=10]
-
-    #check each clan and find the worst charge
-    newlst = []
-    for pair in all_pairs:
-        fifteen = get_combos(pair)
-        total_charge = 0 
-        items = 0 
-        for item in fifteen:
-            total_charge += familyDict[item]
-            items+= 1
-        avgCharge = total_charge/items
-        clan = (pair[0]+pair[1]+1, pair[2]+pair[3]+1,0)
-        newlst.append((avgCharge,clan,pair))
-
-    outfile = open("clans.txt","a") 
-    newlst.sort()
-
-    for item in newlst:
-        print(item,file=outfile)
-    outfile.close()
-
-
-def clans111():
-    familyList = families()
-    familyDict = {}
-    for family in familyList:
-        familyDict[family[1]] = family[0]
-
-    #get all pairs of (a,b) that add up to at most 9
-    all_pairs = [(a, b, c, d, e, f) for a in range(10) for b in range(a, 10) for c in range(10) for d in range(c,10) for e in range(10) for f in range(e,10) if a + b <= 10 if c+d <=10 if e+f <=10]
+    all_pairs1 = [(a, b, c, d, e, f) for a in range(14) for b in range(a, 14) for c in range(14) for d in range(c,14) for e in range(14) for f in range(e,14) if a + b <= 14 if c+d <=14 if e+f <=14]
+    all_pairs2 = [(a, b) for a in range(14) for b in range(a, 14) if a + b <= 14]
+    all_pairs3 = [(a, b, c, d) for a in range(14) for b in range(a, 14) for c in range(14) for d in range(c,14) if a + b <= 14 if c+d <=14]
+    all_pairs = all_pairs2 + all_pairs3 + all_pairs1
 
     #check each clan and find the worst charge
     newlst = []
@@ -167,20 +114,15 @@ def clans111():
             total_charge += familyDict[item]
             items += 1
         avgCharge = total_charge/items
-        clan = (pair[0]+pair[1]+1, pair[2]+pair[3]+1,pair[4]+pair[5]+1)
+        clan = get_clan_from_six(pair)
         newlst.append((avgCharge,clan,pair))
 
-    outfile = open("clans.txt","a") 
+    #write results to clans
+    outfile = open("clans.txt","w") 
     newlst.sort()
     for item in newlst:
         print(item,file=outfile)
     outfile.close()
 
-
-#run each clan finder
-def main():
-    clans001()
-    clans011()
-    clans111()
-
-main()
+#run clan finder
+clans()

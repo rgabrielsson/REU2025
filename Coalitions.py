@@ -1,186 +1,102 @@
 import math
 import itertools
 
-#get rid of duplicates
-def remove_permutation_duplicates(list_of_lists):
-    seen = set()
-    result = []
-    for lst in list_of_lists:
-        key = tuple(sorted(lst))
-        if key not in seen:
-            seen.add(key)
-            result.append(lst)
-    return result
-
-#get charge on a given 0-ving based on formula
-def calc_charge(val):
-    charge = 2**(val-1) * (9-val)
-    if charge < 0:
-        charge = charge / math.comb(val,3)
-    return charge
-
-#get every possible family
-def get_families():
-    families = []
-    for a in range(15):
-        for b in range(15):
-            for c in range(15): 
-                families.append((a,b,c))       
-    return families         
-    
-def families():
-    families = get_families()
-    worst_charge = 0
-    pairings = []
-
-    #iterate over families to find the ones with highest charge
-    for family in families:
-        a = family[0]
-        b = family[1]
-        c = family[2]
-        c3 = calc_charge(3)
-        ca = calc_charge(a+3)
-        cb = calc_charge(b+3)
-        cc = calc_charge(c+3)
-        cab = calc_charge(a+b+3)
-        cac = calc_charge(a+c+3)
-        ccb = calc_charge(b+c+3)
-        cabc = calc_charge(a+b+c+3)
-        charges = [c3,ca,cb,cc,cab,cac,ccb,cabc]
-
-        #find the total charge on each family
-        total = sum(charges) / len(charges)
-        pairings.append((total,(a,b,c)))
-
-        #identify highest possible total charge
-        if total >= worst_charge:
-            worst_charge = total
-    
-    #sort and return list of families and paired charges
-    pairings.sort()
-    return pairings
+def sort_tuple(tup):
+    pair1 = tuple(sorted((tup[0], tup[1])))
+    pair2 = tuple(sorted((tup[2], tup[3])))
+    pair3 = tuple(sorted((tup[4], tup[5])))
+    return (pair1[0], pair1[1], pair2[0], pair2[1], pair3[0], pair3[1])
 
 
-def get_combos(tup):
-    list1 = [1,tup[0]+1, tup[1]+1,tup[0]+tup[1]+1]
+def get_coalition_combos(tup):
+    lists = []
+    for i in range(0, len(tup), 2):
+        a, b = tup[i], tup[i+1]
+        lists.append([1, a+1, b+1, a+b+1])
+    while len(lists) < 6:
+        lists.append([0])
+    return tuple(sort_tuple(combo) for combo in itertools.product(*reversed(lists)))
 
-    if len(tup) > 4:
-        list2 = [1,tup[2]+1, tup[3]+1,tup[2]+tup[3]+1]
-        list3 = [1,tup[4]+1, tup[5]+1,tup[4]+tup[5]+1]
+        
+
+def get_coalition_from_twelve(tup):
+    if len(tup) > 10:
+        return (tup[0]+tup[1]+1, tup[2]+tup[3]+1, tup[4]+tup[5]+1, tup[6]+tup[7]+1, tup[8]+tup[9]+1, tup[10]+tup[11]+1)
+    elif len(tup) > 8:
+        return (tup[0]+tup[1]+1, tup[2]+tup[3]+1, tup[4]+tup[5]+1, tup[6]+tup[7]+1, tup[8]+tup[9]+1, 0)
+    elif len(tup) > 6:
+        return (tup[0]+tup[1]+1, tup[2]+tup[3]+1, tup[4]+tup[5]+1, 0, 0, 0)
+    elif len(tup) > 4:
+        return (tup[0]+tup[1]+1, tup[2]+tup[3]+1, 0, 0, 0, 0)
     elif len(tup) > 2:
-        list2 = [1,tup[2]+1, tup[3]+1,tup[2]+tup[3]+1]
-        list3 = [0]
+        return (tup[0]+tup[1]+1, 0, 0, 0, 0, 0)
     else:
-        list2 = [0]
-        list3 = [0]
-
-    # Get all combinations
-    combinations = list(itertools.product(list3, list2, list1))
-
-    return combinations
-        
+        return (0, 0, 0, 0, 0, 0)
 
 
+def get_clans():
+    infile = open("clans.txt", "r")
+    clans_list = []
+    for line in infile:
+        line = line.replace('(', '')
+        line = line.replace(')', '')
+        line = line.replace(',', '')
+        parts = line.strip().split()
+        avg_charge = float(parts[0])
+        clan = tuple(int(x) for x in parts[1:4])
+        pair = tuple(int(x) for x in parts[4:10])
+        clans_list.append((avg_charge, clan, pair))
+    
+    clanDict = {}
+    for clan in clans_list:
+        clanDict[clan[2]] = clan[0]
+
+    return clanDict
+
+
+
+def get_some_pairs(index):
+    if index == 0:
+        return [(a, b) for a in range(6) for b in range(a, 6) if a + b <= 6]
+    elif index == 1:
+        return [(a, b, c, d) for a in range(6) for b in range(a, 6) for c in range(6) for d in range(c, 6) if a + b <= 6 if c + d <= 6 if a + b + c + d <= 6]
+    elif index == 2:
+        return [(a, b, c, d, e, f) for a in range(6) for b in range(a, 6) for c in range(6) for d in range(c, 6) for e in range(6) for f in range(e, 6) if a + b <= 6 if c + d <= 6 if e + f <= 6 if a + b + c + d <= 6]
+    elif index == 3:
+        return [(a, b, c, d, e, f, g, h) for a in range(6) for b in range(a, 6) for c in range(6) for d in range(c, 6) for e in range(6) for f in range(e, 6) for g in range(6) for h in range(g, 6) if a + b <= 6 if c + d <= 6 if e + f <= 6 if g + h <= 6 if a + b + c + d <= 6 if e + f + g + h <= 6]
+    elif index == 4:
+        return [(a, b, c, d, e, f, g, h, i, j) for a in range(6) for b in range(a, 6) for c in range(6) for d in range(c, 6) for e in range(6) for f in range(e, 6) for g in range(6) for h in range(g, 6) for i in range(6) for j in range(i, 6) if a + b <= 6 if c + d <= 6 if e + f <= 6 if g + h <= 6 if i + j <= 6 if a + b + c + d <= 6 if e + f + g + h <= 6]
+    elif index == 5:
+        return [(a, b, c, d, e, f, g, h, i, j, k, l) for a in range(6) for b in range(a, 6) for c in range(6) for d in range(c, 6) for e in range(6) for f in range(e, 6) for g in range(6) for h in range(g, 6) for i in range(6) for j in range(i, 6) for k in range(6) for l in range(k, 6) if a + b <= 6 if c + d <= 6 if e + f <= 6 if g + h <= 6 if i + j <= 6 if k + l <= 6 if a + b + c + d <= 6 if e + f + g + h <= 6 if i + j + k + l <= 6]
 
 
 
 
+def coalitions():
+    clanDict = get_clans()
+    outfile = open("coalitions.txt","w") 
+    for i in range(6):
+        all_pairs = get_some_pairs(i)
 
-def clans001():
-    familyList = families()
-    familyDict = {}
-    for family in familyList:
-        familyDict[family[1]] = family[0]
+        #check each clan and find the worst charge
+        newlst = []
+        for pair in all_pairs:
+            set = get_coalition_combos(pair)
 
-    #get all pairs of (a,b) that add up to at most 9
-    all_pairs = [(a, b) for a in range(10) for b in range(a, 10) if a + b <= 10]
+            total_charge = 0 
+            items = 0 
+            for item in set:
+                total_charge += clanDict[item]
+                items += 1
+            avgCharge = total_charge/items
+            coalition = get_coalition_from_twelve(pair)
 
-    #find each charge
-    newlst = []
-    for pair in all_pairs:
-        triple = get_combos(pair)
-        total_charge = 0 
-        items = 0 
-        for item in triple:
-            charge = familyDict[item]
-            total_charge += charge
-            items += 1
-        avgCharge = total_charge/items
-        clan = (pair[0]+pair[1]+1, 0,0)
-        newlst.append((avgCharge,clan,pair))
-        
-    outfile = open("clans.txt","w")
-    newlst.sort()
-    for item in newlst:
-        print(item,file=outfile)
+            newlst.append((avgCharge,coalition,pair))
+
+        #write results to clans
+        newlst.sort()
+        for item in newlst:
+            print(item,file=outfile)
     outfile.close()
 
-
-
-def clans011():
-    familyList = families()
-    familyDict = {}
-    for family in familyList:
-        familyDict[family[1]] = family[0]
-
-    #get all pairs of (a,b) that add up to at most 9
-    all_pairs = [(a, b, c, d) for a in range(10) for b in range(a, 10) for c in range(10) for d in range(c,10) if a + b <= 10 if c+d <=10]
-
-    #check each clan and find the worst charge
-    newlst = []
-    for pair in all_pairs:
-        fifteen = get_combos(pair)
-        total_charge = 0 
-        items = 0 
-        for item in fifteen:
-            total_charge += familyDict[item]
-            items+= 1
-        avgCharge = total_charge/items
-        clan = (pair[0]+pair[1]+1, pair[2]+pair[3]+1,0)
-        newlst.append((avgCharge,clan,pair))
-
-    outfile = open("clans.txt","a") 
-    newlst.sort()
-
-    for item in newlst:
-        print(item,file=outfile)
-    outfile.close()
-
-
-def clans111():
-    familyList = families()
-    familyDict = {}
-    for family in familyList:
-        familyDict[family[1]] = family[0]
-
-    #get all pairs of (a,b) that add up to at most 9
-    all_pairs = [(a, b, c, d, e, f) for a in range(10) for b in range(a, 10) for c in range(10) for d in range(c,10) for e in range(10) for f in range(e,10) if a + b <= 10 if c+d <=10 if e+f <=10]
-
-    #check each clan and find the worst charge
-    newlst = []
-    for pair in all_pairs:
-        set = get_combos(pair)
-
-        total_charge = 0 
-        items = 0 
-        for item in set:
-            total_charge += familyDict[item]
-            items += 1
-        avgCharge = total_charge/items
-        clan = (pair[0]+pair[1]+1, pair[2]+pair[3]+1,pair[4]+pair[5]+1)
-        newlst.append((avgCharge,clan,pair))
-
-    outfile = open("clans.txt","a") 
-    newlst.sort()
-    for item in newlst:
-        print(item,file=outfile)
-    outfile.close()
-
-
-#run each clan finder
-def main():
-    clans001()
-    clans011()
-    clans111()
-
-main()
+coalitions()
