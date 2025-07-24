@@ -1,6 +1,5 @@
 import numpy as np
 from scipy.optimize import fsolve
-import itertools
 
 #define dense function
 def f(c):
@@ -25,3 +24,6 @@ def c2():
     print(f"Intersection point: ({intersection_x[0]:.10f}, {intersection_y:.10f})")
 
 c2()
+
+
+print(f(1))

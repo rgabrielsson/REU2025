@@ -98,9 +98,9 @@ def clans():
         familyDict[family[1]] = family[0]
 
     #get all pairs of (a,b) that add up to at most 9
-    all_pairs1 = [(a, b, c, d, e, f) for a in range(14) for b in range(a, 14) for c in range(14) for d in range(c,14) for e in range(14) for f in range(e,14) if a + b <= 14 if c+d <=14 if e+f <=14]
-    all_pairs2 = [(a, b) for a in range(14) for b in range(a, 14) if a + b <= 14]
-    all_pairs3 = [(a, b, c, d) for a in range(14) for b in range(a, 14) for c in range(14) for d in range(c,14) if a + b <= 14 if c+d <=14]
+    all_pairs1 = [(a, b, c, d, e, f) for a in range(10) for b in range(a, 10) for c in range(10) for d in range(c,10) for e in range(10) for f in range(e,10) if a + b <= 10 if c+d <=10 if e+f <=10]
+    all_pairs2 = [(a, b) for a in range(10) for b in range(a, 10) if a + b <= 10]
+    all_pairs3 = [(a, b, c, d) for a in range(10) for b in range(a, 10) for c in range(10) for d in range(c,10) if a + b <= 10 if c+d <=10]
     all_pairs = all_pairs2 + all_pairs3 + all_pairs1
 
     #check each clan and find the worst charge
