@@ -85,8 +85,9 @@ def expected_val(num):
 
         if charge > max_charge:
             max_charge = charge
+            max_vings = vings
             d = sum(clan[1]) + 3
-    print(f"Expected value for {num}: {max_charge} with d = {d}")
+    print(f"Expected value for {num}: {max_charge} with d = {d} and {max_vings} vings.")
     
 
 
