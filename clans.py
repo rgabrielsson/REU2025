@@ -62,15 +62,20 @@ def families():
 
 #get every combination for each clan
 def get_combos(tup):
-    list1 = [1,tup[0]+1, tup[1]+1,tup[0]+tup[1]+1]
-
     if len(tup) > 4:
+        list1 = [1,tup[0]+1, tup[1]+1,tup[0]+tup[1]+1]
         list2 = [1,tup[2]+1, tup[3]+1,tup[2]+tup[3]+1]
         list3 = [1,tup[4]+1, tup[5]+1,tup[4]+tup[5]+1]
     elif len(tup) > 2:
+        list1 = [1,tup[0]+1, tup[1]+1,tup[0]+tup[1]+1]
         list2 = [1,tup[2]+1, tup[3]+1,tup[2]+tup[3]+1]
         list3 = [0]
+    elif len(tup) > 0:
+        list1 = [1,tup[0]+1, tup[1]+1,tup[0]+tup[1]+1]
+        list2 = [0]
+        list3 = [0]
     else:
+        list1 = [0]
         list2 = [0]
         list3 = [0]
 
@@ -101,7 +106,7 @@ def clans():
     all_pairs1 = [(a, b, c, d, e, f) for a in range(10) for b in range(a, 10) for c in range(10) for d in range(c,10) for e in range(10) for f in range(e,10) if a + b <= 10 if c+d <=10 if e+f <=10]
     all_pairs2 = [(a, b) for a in range(10) for b in range(a, 10) if a + b <= 10]
     all_pairs3 = [(a, b, c, d) for a in range(10) for b in range(a, 10) for c in range(10) for d in range(c,10) if a + b <= 10 if c+d <=10]
-    all_pairs = all_pairs2 + all_pairs3 + all_pairs1
+    all_pairs = all_pairs2 + all_pairs3 + all_pairs1 + [()]
 
     #check each clan and find the worst charge
     newlst = []
