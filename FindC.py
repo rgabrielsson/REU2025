@@ -9,7 +9,7 @@ def f(c):
 
 #define sparse function
 def g(c):
-    sparse = 81*2/(9-4*c)
+    sparse = 74.2431818181818*2/(9-4*c)
     return sparse
 
 #find differences between pg limit for dense and sparse
@@ -24,6 +24,3 @@ def c2():
     print(f"Intersection point: ({intersection_x[0]:.10f}, {intersection_y:.10f})")
 
 c2()
-
-
-print(f(1))

@@ -60,10 +60,6 @@ def families():
     pairings.sort()
     for pairing in pairings:
         print(pairing,file = outfile)
-        # if pairing[0] == worst_charge:
-        #     worst_families.append(pairing[1])
-        # if pairing[0] > 0.5*worst_charge:
-        #     print(pairing)
     
     outfile.close
 
